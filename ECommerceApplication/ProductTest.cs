@@ -119,5 +119,129 @@ namespace ECommerceApplication
             // arrange & act & assert
             Assert.Throws<ArgumentException>(() => new Product(302, "Server", 8001, 10));
         }
+
+        // what it does: checks if a valid stock amount is assigned correctly.
+        // why it was chosen: verifies normal stock values.
+        [Test]
+        public void StockAmount_ValidValue_SetsCorrectly()
+        {
+            // arrange
+            var product = new Product(400, "Chair", 100, 100);
+
+            // assert
+            Assert.That(product.StockAmount, Is.EqualTo(100));
+        }
+
+        // what it does: checks if stock below the minimum allowed throws an error.
+        // why it was chosen: prevents invalid stock values.
+        [Test]
+        public void StockAmount_BelowRange_ThrowsException()
+        {
+            // arrange & act & assert
+            Assert.Throws<ArgumentException>(() => new Product(401, "SSD", 100, 7));
+        }
+
+        // what it does: checks if stock above the maximum allowed throws an error.
+        // why it was chosen: ensures excessive stock is rejected.
+        [Test]
+        public void StockAmount_AboveRange_ThrowsException()
+        {
+            // arrange & act & assert
+            Assert.Throws<ArgumentException>(() => new Product(403, "HDD", 150, 800001));
+        }
+
+
+
+        // what it does: checks if stock increases correctly with a valid amount.
+        // why it was chosen: ensures stock updates properly.
+        [Test]
+        public void IncreaseStock_ValidValue_UpdatesStock()
+        {
+            // arrange
+            var product = new Product(500, "Tablet", 500, 30);
+            int increaseAmount = 10;
+
+            // act
+            product.IncreaseStock(increaseAmount);
+
+            // assert
+            Assert.That(product.StockAmount, Is.EqualTo(40));
+        }
+
+        // what it does: checks if increasing stock by zero throws an error.
+        // why it was chosen: prevents invalid updates.
+        [Test]
+        public void IncreaseStock_ZeroValue_ThrowsException()
+        {
+            // arrange
+            var product = new Product(501, "Phone", 999, 25);
+
+            // act & assert
+            Assert.Throws<ArgumentException>(() => product.IncreaseStock(0));
+        }
+
+        // what it does: checks if increasing stock by a large value updates correctly.
+        // why it was chosen: ensures large stock increases work.
+        [Test]
+        public void IncreaseStock_LargeValue_UpdatesStock()
+        {
+            // arrange
+            var product = new Product(504, "Bulk Paper", 50, 50000);
+            int increaseAmount = 100000;
+
+            // act
+            product.IncreaseStock(increaseAmount);
+
+            // assert
+            Assert.That(product.StockAmount, Is.EqualTo(150000));
+        }
+
+
+
+        // what it does: checks if stock decreases correctly with a valid amount.
+        // why it was chosen: ensures stock reduction works properly.
+        [Test]
+        public void DecreaseStock_ValidValue_UpdatesStock()
+        {
+            // arrange
+            var product = new Product(600, "Monitor", 400, 50);
+            int decreaseAmount = 20;
+
+            // act
+            product.DecreaseStock(decreaseAmount);
+
+            // assert
+            Assert.That(product.StockAmount, Is.EqualTo(30));
+        }
+
+
+        // what it does: checks if decreasing stock below zero throws an error.
+        // why it was chosen: prevents negative stock.
+        [Test]
+        public void DecreaseStock_BelowZero_ThrowsException()
+        {
+            // arrange5
+            var product = new Product(601, "Webcam", 100, 8);
+            int decreaseAmount = 9;
+
+            // act & assert
+            Assert.Throws<InvalidOperationException>(() => product.DecreaseStock(decreaseAmount));
+        }
+
+        // what it does: checks if reducing stock to zero works correctly.
+        // why it was chosen: verifies edge case handling.
+        [Test]
+        public void DecreaseStock_ToZero_UpdatesStock()
+        {
+            // arrange
+            var product = new Product(602, "Mouse", 30, 10);
+            int decreaseAmount = 10;
+
+            // act
+            product.DecreaseStock(decreaseAmount);
+
+            // assert
+            Assert.That(product.StockAmount, Is.EqualTo(0));
+        }
     }
 }
